@@ -42,7 +42,7 @@
 
 ### Core
 
-* [IoC и DI]
+* [IoC и DI](spring/ioc-and-di.md)
 * [Жизненный цикл бина]
 * [Конфигурация (annotations vs Java config)]
 
