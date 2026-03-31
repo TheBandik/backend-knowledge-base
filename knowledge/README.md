@@ -2,7 +2,7 @@
 
 ## Java Core
 
-* [ООП]
+* [ООП](java/oop.md)
 * [equals и hashCode]
 * [String и неизменяемость]
 * [Коллекции (List, Set, Map, HashMap)]
