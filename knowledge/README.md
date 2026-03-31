@@ -4,7 +4,7 @@
 
 * [ООП](java/oop.md)
 * [equals и hashCode](java/equals-and-hashcode.md)
-* [String и неизменяемость]
+* [String и неизменяемость](java/string-and-immutability.md)
 * [Коллекции (List, Set, Map, HashMap)]
 * [Generics]
 * [Исключения (checked vs unchecked)]
