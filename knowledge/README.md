@@ -3,6 +3,7 @@
 ## Java Core
 
 * [ООП](java/oop.md)
+* [Полиморфизм, типы ссылок и абстракции](java/polymorphism-reference-types-and-abstraction.md)
 * [equals и hashCode](java/equals-and-hashcode.md)
 * [String и неизменяемость](java/string-and-immutability.md)
 * [Коллекции (List, Set, Map, HashMap)]
