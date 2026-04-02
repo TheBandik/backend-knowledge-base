@@ -395,3 +395,252 @@ public static <T> void copy(List<? super T> dest, List<? extends T> src) {
 * `src` – источник (producer) → `extends`
 * `dest` – приёмник (consumer) → `super`
 * обеспечивает безопасное копирование
+
+---
+
+## Вопросы
+
+### Table of Contents
+
+* [Что такое generics и зачем они нужны?](#что-такое-generics-и-зачем-они-нужны)
+* [Generics работают на compile-time или runtime?](#generics-работают-на-compile-time-или-runtime)
+* [Что такое type erasure?](#что-такое-type-erasure)
+* [Какие ограничения накладывает type erasure?](#какие-ограничения-накладывает-type-erasure)
+* [Как обеспечивается типобезопасность?](#как-обеспечивается-типобезопасность)
+* [Почему raw types опасны?](#почему-raw-types-опасны)
+* [Почему generics инвариантны?](#почему-generics-инвариантны)
+* [Что такое wildcard (`?`)?](#что-такое-wildcard-)
+* [Разница между `? extends T` и `? super T`](#разница-между--extends-t-и--super-t)
+* [Почему нельзя добавлять в `? extends`?](#почему-нельзя-добавлять-в--extends)
+* [Почему `List<Integer>` не является `List<Number>`?](#почему-listinteger-не-является-listnumber)
+* [Когда использовать `? extends`?](#когда-использовать--extends)
+* [Почему `List<Object>` и `List<?>` – не одно и то же?](#почему-listobject-и-list--не-одно-и-то-же)
+* [Почему работает `List<? extends Number>`?](#почему-работает-listextends-number)
+* [Почему не работает `List<Number> = new ArrayList<Integer>()`?](#почему-не-работает-listnumber--new-arraylistinteger)
+* [Почему работает `? super`?](#почему-работает--super)
+* [Почему не работает `? super Integer` с Double?](#почему-не-работает--super-integer-с-double)
+* [Почему `List<?>` принимает любой тип?](#почему-list--принимает-любой-тип)
+* [Где использовать wildcard?](#где-использовать-wildcard)
+* [Ключевые выводы](#ключевые-выводы)
+
+---
+
+### Что такое generics и зачем они нужны?
+
+Generics (обобщения) – механизм параметризации типов, позволяющий писать универсальный и типобезопасный код.
+
+Основные цели:
+
+* типобезопасность на этапе компиляции
+* устранение явных приведений типов
+* повышение читаемости и надёжности
+
+```java
+List<String> list = new ArrayList<>();
+String s = list.get(0);
+```
+
+---
+
+### Generics работают на compile-time или runtime?
+
+Generics работают на этапе компиляции.
+В runtime информация о типах удаляется (type erasure).
+
+---
+
+### Что такое type erasure?
+
+Type erasure – удаление информации о generic-типах при компиляции.
+
+```java
+List<String> → List
+List<Integer> → List
+```
+
+`T` заменяется:
+
+* на `Object`
+* или на ограничение (`T extends Number → Number`)
+
+---
+
+### Какие ограничения накладывает type erasure?
+
+* нельзя `new T()`
+* нельзя `instanceof List<String>`
+* нельзя `new T[]`
+* нельзя перегружать методы только по generic-параметру
+
+---
+
+### Как обеспечивается типобезопасность?
+
+Компилятор:
+
+* проверяет типы
+* вставляет неявные cast
+
+```java
+String s = (String) list.get(0);
+```
+
+---
+
+### Почему raw types опасны?
+
+```java
+List list = new ArrayList<String>();
+list.add(123);
+
+List<String> strings = list;
+String s = strings.get(0); // ClassCastException
+```
+
+Ошибка возникает при извлечении.
+
+---
+
+### Почему generics инвариантны?
+
+```java
+List<Integer> ≠ List<Number>
+```
+
+Иначе:
+
+```java
+List<Integer> ints = new ArrayList<>();
+List<Number> nums = ints;
+
+nums.add(3.14); // ломает тип
+```
+
+---
+
+### Что такое wildcard (`?`)?
+
+```java
+List<?> list
+```
+
+Список неизвестного типа.
+
+---
+
+### Разница между `? extends T` и `? super T`
+
+### `? extends T`
+
+* чтение
+* нельзя добавлять
+
+```java
+List<? extends Number>
+```
+
+---
+
+#### `? super T`
+
+* запись
+* чтение только как `Object`
+
+```java
+List<? super Integer>
+```
+
+---
+
+#### PECS
+
+Producer Extends, Consumer Super
+
+---
+
+### Почему нельзя добавлять в `? extends`?
+
+Тип неизвестен (`Integer` или `Double`), добавление небезопасно.
+
+---
+
+### Почему `List<Integer>` не является `List<Number>`?
+
+Из-за инвариантности generics.
+
+---
+
+### Когда использовать `? extends`?
+
+Когда метод должен принимать разные подтипы:
+
+```java
+void print(List<? extends Number> list)
+```
+
+---
+
+### Почему `List<Object>` и `List<?>` – не одно и то же?
+
+`List<Object>`:
+
+* можно добавлять любые объекты
+
+`List<?>`:
+
+* нельзя добавлять (кроме null)
+
+---
+
+### Почему работает `List<? extends Number>`?
+
+```java
+List<? extends Number> list = new ArrayList<Integer>();
+```
+
+`Integer` удовлетворяет ограничению.
+
+---
+
+### Почему не работает `List<Number> = new ArrayList<Integer>()`?
+
+Инвариантность generics.
+
+---
+
+### Почему работает `? super`?
+
+```java
+List<? super Integer> list = new ArrayList<Number>();
+```
+
+`Number` – родитель `Integer`.
+
+---
+
+### Почему не работает `? super Integer` с Double?
+
+`Double` не является родителем `Integer`.
+
+---
+
+### Почему `List<?>` принимает любой тип?
+
+```java
+List<?> list = new ArrayList<String>();
+```
+
+`?` – неизвестный тип.
+
+---
+
+### Где использовать wildcard?
+
+Использовать:
+
+* в сигнатурах методов
+* в API
+
+Не использовать:
+
+* без необходимости в локальных переменных
