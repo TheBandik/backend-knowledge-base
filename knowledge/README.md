@@ -7,6 +7,7 @@
 * [equals и hashCode](java/equals-and-hashcode.md)
 * [String и неизменяемость](java/string-and-immutability.md)
 * [Коллекции (List, Set, Map, HashMap)]
+* [Records](java/records.md)
 * [Generics](java/generics.md)
 * [Исключения (checked vs unchecked)]
 
